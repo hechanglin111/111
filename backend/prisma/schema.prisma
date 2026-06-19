@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  passwordHash  String
+  name          String?
+  avatar        String?
+  level         String          @default("L1")
+  goals         String          @default("[]")
+  interests     String          @default("[]")
+  weeklyHours   Int             @default(7)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  planSettings  String          @default("{\"auto_adjust\":true,\"daily_reminder\":true,\"reminder_time\":\"08:00\"}")
+
+  studyPlans    StudyPlan[]
+  progress      LearningProgress?
+}
+
+model StudyPlan {
+  id                String          @id @default(uuid())
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status            String          @default("active")
+  currentLevel      String
+  totalWeeks        Int
+  startDate         DateTime        @default(now())
+  estimatedEndDate  DateTime
+
+  units             LearningUnit[]
+  adjustmentHistory String          @default("[]")
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model LearningUnit {
+  id          String      @id @default(uuid())
+  planId      String
+  plan        StudyPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  title       String
+  description String      @default("")
+  order       Int
+  status      String      @default("locked")
+
+  days        DayTask[]
+}
+
+model DayTask {
+  id                String        @id @default(uuid())
+  unitId            String
+  unit              LearningUnit  @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  dayNumber         Int
+  date              DateTime?
+  theme             String
+  videoUrl          String
+  videoDuration     Int
+  docContent        String        @default("")
+  practiceTask      String?
+  estimatedMinutes  Int
+  status            String        @default("locked")
+  completionRate    Float         @default(0)
+}
+
+model AINews {
+  id          String    @id @default(uuid())
+  title       String
+  summary     String
+  sourceUrl   String
+  sourceName  String
+  publishDate DateTime
+  tags        String    @default("[]")
+  isPushed    Boolean   @default(false)
+  pushDate    DateTime?
+
+  createdAt   DateTime  @default(now())
+}
+
+model LearningProgress {
+  id                  String    @id @default(uuid())
+  userId              String    @unique
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentUnitId       String?
+  currentDay          Int       @default(1)
+  totalCompletedDays  Int       @default(0)
+  totalSkippedDays    Int       @default(0)
+  streakDays          Int       @default(0)
+  lastStudyDate       DateTime?
+  completionRate      Float     @default(0)
+  videoWatchProgress  String    @default("{}")
+  docReadStatus       String    @default("{}")
+
+  updatedAt           DateTime  @updatedAt
+}
+
+model NewsBookmark {
+  id      String  @id @default(uuid())
+  userId  String
+  newsId  String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, newsId])
+}
