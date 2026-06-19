@@ -35,11 +35,12 @@ app.get('/api/health', (_req, res) => {
 })
 
 // Serve built frontend static files
-app.use(express.static(path.join(__dirname, 'dist')))
+const publicPath = path.join(__dirname, 'public')
+app.use(express.static(publicPath))
 
 // Catch-all route for SPA routing
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+  res.sendFile(path.join(publicPath, 'index.html'))
 })
 
 // Error handler

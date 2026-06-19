@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ai-daily-learn
+    runtime: node
+    buildCommand: cd backend && npm install && npx prisma migrate deploy && node prisma/seed.js && npm run build && cd .. && cd ai-daily-learn && npm install && npm run build && cp -r dist ../backend/public
+    startCommand: cd backend && npm start
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        value: ai-daily-learn-secret-key-change-in-production
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
