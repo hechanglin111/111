@@ -1,13 +1,10 @@
 {
   "name": "ai-daily-learn-backend",
   "version": "1.0.0",
-  "description": "AI Daily Learn Backend - Express + TypeScript + Prisma",
-  "main": "server.ts",
+  "description": "AI Daily Learn Backend - Express + Prisma",
+  "main": "server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "build:all": "tsc && cd ../ai-daily-learn && npm install && npm run build && cp -r dist ../backend/public",
+    "start": "node server.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "node prisma/seed.js"
@@ -24,14 +21,6 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.0.0",
-    "prisma": "^6.0.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.6.0"
+    "prisma": "^6.0.0"
   }
 }
