@@ -36,12 +36,22 @@ app.get('/api/health', (_req, res) => {
 
 // Serve built frontend static files
 const publicPath = path.join(__dirname, 'public')
-app.use(express.static(publicPath))
+const fs = require('fs')
 
-// Catch-all route for SPA routing
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'))
-})
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath))
+  // Catch-all route for SPA routing
+  app.get('*', (_req, res) => {
+    const indexPath = path.join(publicPath, 'index.html')
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath)
+    } else {
+      res.status(404).json({ success: false, message: 'Frontend not built' })
+    }
+  })
+} else {
+  console.log('Warning: public directory not found, serving API only')
+}
 
 // Error handler
 app.use((err, _req, res, _next) => {

@@ -3,9 +3,10 @@ services:
     name: ai-daily-learn
     runtime: node
     buildCommand: |
-      cd backend && npm install && npx prisma migrate deploy && node prisma/seed.js
-      cd ../ai-daily-learn && npm install && npm run build
-      mkdir -p ../backend/public && cp -r dist/* ../backend/public/
+      echo "=== Current directory ===" && pwd && ls -la
+      echo "=== Backend setup ===" && cd backend && npm install && npx prisma migrate deploy && node prisma/seed.js
+      echo "=== Frontend build ===" && cd ../ai-daily-learn && npm install && npm run build
+      echo "=== Copy frontend ===" && mkdir -p ../backend/public && cp -r dist/* ../backend/public/ && ls -la ../backend/public/
     startCommand: cd backend && npm start
     envVars:
       - key: DATABASE_URL
