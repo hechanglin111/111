@@ -2,7 +2,10 @@ services:
   - type: web
     name: ai-daily-learn
     runtime: node
-    buildCommand: cd backend && npm install && npx prisma migrate deploy && node prisma/seed.js && cd .. && cd ai-daily-learn && npm install && npm run build && cp -r dist ../backend/public
+    buildCommand: |
+      cd backend && npm install && npx prisma migrate deploy && node prisma/seed.js
+      cd ../ai-daily-learn && npm install && npm run build
+      mkdir -p ../backend/public && cp -r dist/* ../backend/public/
     startCommand: cd backend && npm start
     envVars:
       - key: DATABASE_URL
